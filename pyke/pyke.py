@@ -7,6 +7,11 @@ import snake
 
 FOR_EVER_AND_EVER = True
 
+def clear_screen():
+    pygame.draw.rect(screen,
+                     0x0,
+                     (0, 0, settings.WIN_SIZE_X, settings.WIN_SIZE_Y))
+
 
 def update_snake_display(body):
     pygame.draw.rect(screen,
@@ -33,14 +38,20 @@ def draw_snake(body):
     pygame.display.update()
 
 
-def draw_points(points):
-    for point in points:
-        pygame.draw.rect(screen,
-                         0xFFFFFF,
-                         (point[0] * settings.CELL_SIZE, point[1] * settings.CELL_SIZE,
-                         settings.CELL_SIZE, settings.CELL_SIZE),
-                         0)
+def draw_point(point_pos):
+    pygame.draw.rect(screen,
+                     0xFFFFFF,
+                     (point_pos[0] * settings.CELL_SIZE, point_pos[1] * settings.CELL_SIZE,
+                      settings.CELL_SIZE, settings.CELL_SIZE))
+    pygame.display.update()
 
+
+def dump_item_map(map):
+    for y in map:
+        print(
+            " ".join("{:>3}".format(x) for x in y)
+            )
+    
 def add_points_to_map(map, points):
     for point in points:
         map[point[1]][point[0]] = 1
@@ -48,22 +59,16 @@ def add_points_to_map(map, points):
 
 def main():
 
-    fruit = item.Item((5, 12), (settings.CELLS_X, settings.CELLS_Y), intensity=10)
+    fruit = item.Item((5, 12), (settings.CELLS_X, settings.CELLS_Y))
 
-    tmp = [0 for i in range(settings.CELLS_X)]
-    map = [list(tmp) for i in range(settings.CELLS_Y)]
+    #tmp = [0 for i in range(settings.CELLS_X)]
+    #map = [list(tmp) for i in range(settings.CELLS_Y)]
     
-    ia = snake.Snake(int(settings.CELLS_X / 2), int(settings.CELLS_Y / 2))
-    
-
-
-    #draw_points(points)
+    ia = snake.Snake(20, 20)
     
     draw_snake(ia.body)
-
-
-
-    #for i in range(int(settings.CELLS_X / 2) + 1, int(settings.CELLS_X), 1):
+    draw_point(fruit.pos)
+    dump_item_map(fruit.smell.map)
 
     while FOR_EVER_AND_EVER:
 
@@ -71,19 +76,20 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
-        #ia.move(i, int(settings.CELLS_Y / 2))
-        ia.smell(map)
+        ia.smell(fruit.smell.map)
         ia.auto_move()
-        update_snake_display(ia.body)
-        ia._cut_tail()
+
+        clear_screen()
+        draw_snake(ia.body)
+        draw_point(fruit.pos)
 
         time.sleep(0.5)
 
 
 if __name__ == "__main__":
-    #pygame.init()
+    pygame.init()
     
-    #screen = pygame.display.set_mode((settings.WIN_SIZE_X, settings.WIN_SIZE_Y))
+    screen = pygame.display.set_mode((settings.WIN_SIZE_X, settings.WIN_SIZE_Y))
 
     main()
 

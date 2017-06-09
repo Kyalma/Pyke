@@ -6,6 +6,7 @@ class Snake(object):
         self.body = list()
         self.size = size
         self.next_move = None
+        self.next_move_value = None
         for i in range(size):
             self.body.insert(0, (posx - i, posy))
 
@@ -14,6 +15,7 @@ class Snake(object):
         self.body.append(self.next_move)
         del self.body[0]
         self.next_move = None
+        self.next_move_value = None
 
 
     def manual_move(self, posx, posy):
@@ -36,7 +38,8 @@ class Snake(object):
         around -= set(self.body)
 
         for dir in around:
-            if map[dir[1]][dir[0]]:
+            if not self.next_move or self.next_move_value > map[dir[1]][dir[0]]:
                 self.next_move = dir
+                self.next_move_value = map[dir[1]][dir[0]]
         if not self.next_move:
             self.next_move = around.pop()

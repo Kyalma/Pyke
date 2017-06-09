@@ -1,6 +1,6 @@
 
-CELLS_X = 20
-CELLS_Y = 20
+CELLS_X = 30
+CELLS_Y = 30
 
 CELL_SIZE = 20
 
