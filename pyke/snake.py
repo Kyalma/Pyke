@@ -18,14 +18,16 @@ class Snake(object):
         self.next_move_value = None
 
 
-    def manual_move(self, posx, posy):
+    def manual_move(self, posx, posy) -> bool:
         if (posx, posy) in self.body:
             print('Invalid move: Already there')
+            return False
         else:
             self.body.append((posx, posy))
+        return True
 
 
-    def smell(self, map):
+    def smell(self, map) -> None:
         pos_head = self.body[-1]
 
         around = set()

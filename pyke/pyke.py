@@ -8,9 +8,7 @@ import snake
 FOR_EVER_AND_EVER = True
 
 def clear_screen():
-    pygame.draw.rect(screen,
-                     0x0,
-                     (0, 0, settings.WIN_SIZE_X, settings.WIN_SIZE_Y))
+    screen.fill(0x0)
 
 
 def update_snake_display(body):
@@ -46,6 +44,13 @@ def draw_point(point_pos):
     pygame.display.update()
 
 
+def draw_debug_tile(map):
+    for y in range(settings.CELLS_Y):
+        for x in range(settings.CELLS_X):
+            screen.blit(value_tile[map[y][x]], (x * settings.CELL_SIZE, y * settings.CELL_SIZE))
+    pygame.display.update()
+
+
 def dump_item_map(map):
     for y in map:
         print(
@@ -68,7 +73,9 @@ def main():
     
     draw_snake(ia.body)
     draw_point(fruit.pos)
-    dump_item_map(fruit.smell.map)
+    
+    #dump_item_map(fruit.smell.map)
+    draw_debug_tile(fruit.smell.map)
 
     while FOR_EVER_AND_EVER:
 
@@ -80,7 +87,10 @@ def main():
         ia.auto_move()
 
         clear_screen()
+
+        draw_debug_tile(fruit.smell.map)
         draw_snake(ia.body)
+
         draw_point(fruit.pos)
 
         time.sleep(0.5)
@@ -88,6 +98,13 @@ def main():
 
 if __name__ == "__main__":
     pygame.init()
+    pygame.font.init()
+
+    font = pygame.font.SysFont("monospace", int(settings.CELL_SIZE * 2 / 3))
+
+    value_tile = dict()
+    for value in range(settings.CELLS_X + settings.CELLS_Y):
+        value_tile[value] = font.render("{}".format(value), True, (255, 255, 255))
     
     screen = pygame.display.set_mode((settings.WIN_SIZE_X, settings.WIN_SIZE_Y))
 
