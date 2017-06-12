@@ -1,5 +1,6 @@
 import time
 import pygame
+import random
 
 import item
 import settings
@@ -64,7 +65,10 @@ def add_points_to_map(map, points):
 
 def main():
 
+    items = list()
     fruit = item.Item((5, 12), (settings.CELLS_X, settings.CELLS_Y))
+
+    items.append(fruit)
 
     #tmp = [0 for i in range(settings.CELLS_X)]
     #map = [list(tmp) for i in range(settings.CELLS_Y)]
@@ -79,21 +83,36 @@ def main():
 
     while FOR_EVER_AND_EVER:
 
+        if len(items) == 0:
+            random.seed()
+            items.append(
+                item.Item(
+                    (random.randint(0, settings.CELLS_X - 1), random.randint(0, settings.CELLS_Y)),
+                    (settings.CELLS_X, settings.CELLS_Y)
+                    )
+                )
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
-        ia.smell(fruit.smell.map)
-        ia.auto_move()
+        for _item in items:
+            ia.smell(_item.smell.map)
+
+        if ia.is_gonna_eat():
+            ia.eat(items)
+        else:
+            ia.auto_move()
 
         clear_screen()
 
-        draw_debug_tile(fruit.smell.map)
+        for _item in items:
+            draw_debug_tile(_item.smell.map)
+            draw_point(_item.pos)
+        
         draw_snake(ia.body)
 
-        draw_point(fruit.pos)
-
-        time.sleep(0.5)
+        #time.sleep(0.3)
 
 
 if __name__ == "__main__":
@@ -110,4 +129,5 @@ if __name__ == "__main__":
 
     main()
 
+    pygame.font.quit()
     pygame.quit()
